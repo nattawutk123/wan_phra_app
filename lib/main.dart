@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 void main() {
@@ -9,15 +10,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Wan Phra App',
+      title: 'wan phra',
       theme: ThemeData(
-        primaryColor: const Color(0xFF8AB4F8),
-        accentColor: const Color(0xFFB39DDB),
-        textTheme: const TextTheme(
-          bodyText2: TextStyle(color: Colors.white),
-        ),
+        primaryColor: Color.fromARGB(255, 240, 135, 8),
       ),
-      home: MyHomePage(title: 'Wan Phra App'),
+      home: const MyHomePage(title: 'วันพระ'),
     );
   }
 }
@@ -32,13 +29,13 @@ class MyHomePage extends StatefulWidget {
 
 
 class _MyHomePageState extends State<MyHomePage> {
-  CalendarFormat _calendarFormat = CalendarFormat.month;
+  final CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  List<String> _backgroundImages = [
-    'assets/background1.jpg',
-    'assets/background2.jpg',
-    'assets/background3.jpg',
+  final List<String> _backgroundImages = [
+    'assets/background11.jpg',
+    'assets/background21.jpg',
+    'assets/background31.jpg',
   ];
 
   @override
@@ -73,8 +70,8 @@ class _MyHomePageState extends State<MyHomePage> {
         shape: BoxShape.circle,
       ),
       outsideDaysVisible: false,
-      defaultTextStyle: TextStyle(fontSize: 18, color: Colors.white),
-      weekendTextStyle: TextStyle(fontSize: 18, color: Colors.white),
+      defaultTextStyle: const TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'OpenSans',),
+      weekendTextStyle: const TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'OpenSans',),
     );
   }
 
@@ -88,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Icon(
               Icons.star,
               size: 18.0,
-              color: Colors.white,
+              color: Colors.amber.shade800,
             ),
           );
         }
@@ -97,11 +94,15 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title, style: TextStyle(
+      fontSize: 30, color: Colors.grey.shade200, fontFamily: 'OpenSans',fontWeight: FontWeight.bold,
+
+        ),),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Container(
@@ -110,35 +111,84 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              TableCalendar(
-                firstDay: DateTime.utc(2020, 10, 16),
-                lastDay: DateTime.utc(2030, 3, 16),
-                focusedDay: _focusedDay,
-                calendarFormat: _calendarFormat,
-                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                  });
-                },
-                onPageChanged: (focusedDay) {
-                  setState(() {
-                    _focusedDay = focusedDay;
-                  });
-                },
-                calendarStyle: calendarStyle,
-                calendarBuilders: calendarBuilders,
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                margin: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {
+                            setState(() {
+                              _focusedDay = DateTime(
+                                _focusedDay.year,
+                                _focusedDay.month - 1,
+                                _focusedDay.day,
+                              );
+                            });
+                          },
+                        ),
+                        Text(
+                          DateFormat.yMMMM().format(_focusedDay),
+                          style: const TextStyle(fontSize: 24),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_forward),
+                          onPressed: () {
+                            setState(() {
+                              _focusedDay = DateTime(
+                                _focusedDay.year,
+                                _focusedDay.month + 1,
+                                _focusedDay.day,
+                              );
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    TableCalendar(
+                      firstDay: DateTime.utc(2020, 10, 16),
+                      lastDay: DateTime.utc(2030, 3, 16),
+                      focusedDay: _focusedDay,
+                      calendarFormat: _calendarFormat,
+                  selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      _selectedDay = selectedDay;
+                      _focusedDay = focusedDay;
+                    });
+                  },
+                  onPageChanged: (focusedDay) {
+                    setState(() {
+                      _focusedDay = focusedDay;
+                    });
+                  },
+                  calendarStyle: calendarStyle,
+                  calendarBuilders: calendarBuilders,
+                      // ... existing properties ...
+                      headerVisible: false,
+                    ),
+                  ],
+                ),
               ),
               if (isWanPhra(_focusedDay))
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: Text(
                     'วันนี้วันพระ รักษากาย วาจา ใจ',
                     style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 25,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                        color: Colors.white,
+                        fontFamily: 'OpenSans', 
+                        ),
                   ),
                 ),
             ],
